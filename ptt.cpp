@@ -27,12 +27,6 @@ ptt::ptt(const QString name, QObject *parent) : QObject(parent)
     hlayout.addWidget(m_button);
 }
 
-void ptt::registerAmi(Ami* pami)
-{
-    if (pami != nullptr) {
-        p_ami = pami;
-    }
-}
 
 
 ptt::~ptt()
@@ -41,18 +35,7 @@ ptt::~ptt()
 
 void ptt::hClick()
 {
-    AmiMsg m;
-// local check for the right command - done
-    bool ok = true;
-    m.addField("Action: ping", &ok);
-    m.addField("ActionId: 121212", &ok);
 
-    if (ok) {
-        AmiAction* a = new AmiAction(this, m);
-        p_ami->sendAction(a);
-    } else {
-        std::cout << "ERROR COMMAND\n";
-    }
 }
 
 
@@ -66,18 +49,6 @@ void ptt::hPress()
     // if you want to handle a held button
 }
 
-void ptt::handleAmiRespond(const AmiAction* action)
-{
-    // test call message
-    std::cout << "Callee: "
-              << action->getCallMsg().toString().toStdString()
-              << std::endl;
-
-    // test response message
-    std::cout << "AmiResponse: "
-              << action->getRespondMsg().toString().toStdString()
-              << std::endl;
-}
 
 
 

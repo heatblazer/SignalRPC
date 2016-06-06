@@ -1,5 +1,3 @@
-#include "ami.h"
-
 // Std headers //
 #include <iostream>
 #include <stdio.h> // for fprintf //
@@ -12,12 +10,12 @@
 
 
 
-SignalRPC::SignalRPC(const QString& amiUser, const QString& amiPass, QObject* parent) :
+SignalRPC::SignalRPC(const QString& usr, const QString& pass, QObject* parent) :
     QObject(parent),
-    m_state(AmiState::AMI_DISCONNECTED),
+    m_state(SignalStates::SRPC_DISCONNECTED),
     m_socket(this),
-    m_amiUser(amiUser),
-    m_amiPass(amiPass),
+    m_user(usr),
+    m_passwd(pass),
     m_loginTimeout(this),
     m_isOneTime(false)  // check for the init - don`t init 2 times
 {
@@ -55,16 +53,16 @@ void SignalRPC::init(void)
     // never call init 2 times - move the bool var in the class
     if (!m_isOneTime) {
         m_isOneTime = true;
-        stateChange();
+        handleStateChange();
     }
 
 }
 
 
-void Ami::hConnected()
+void SignalRPC::hConnected()
 {
-    m_state = AmiState::AMI_CONNECTED;
-    stateChange();
+    m_state = SignalStates::SRPC_CONNECTED;
+    emit srpcStateChanged(m_state);
 }
 
 
@@ -83,7 +81,7 @@ void SignalRPC::hBytesWritten(qint64 bytes)
 
 void SignalRPC::hReadyRead()
 {
-
+#if 0
     const QString ami_new_line = "\r\n";
     char local_buff[512];
     while (m_socket.canReadLine()) {
@@ -98,14 +96,7 @@ void SignalRPC::hReadyRead()
             }
         }
     }
-}
-
-
-void SignalRPC::hLoginTimeout()
-{
-    m_state = AmiState::AMI_DISCONNECTED;
-    m_socket.abort();
-    stateChange();
+#endif
 }
 
 
@@ -119,7 +110,7 @@ void SignalRPC::handleStateChange(void)
     {
     }
 
-    emit amiStateChanged(m_state);
+    emit srpcStateChanged(m_state);
 }
 
 

@@ -25,7 +25,7 @@ class SignalRPC : public QObject
 
 
 public:
-    explicit SignalRPC(const QString& amiUser, const QString& amiPass,
+    explicit SignalRPC(const QString& usr, const QString& pass,
                  QObject* parent = nullptr);
     virtual ~SignalRPC();
 
@@ -44,19 +44,15 @@ private slots:
     void hDisconnected();
     void hBytesWritten(qint64 bytes);
     void hReadyRead();
-    void hLoginTimeout();
 
 // handle all changes in the state and route specific actions
     void handleStateChange(void);
 
 private:
-    SignalRPC    m_state;
+    SignalStates    m_state;
     // be careful when using the union setting member 1 will unset member 2
 
-    union {
-        QTcpSocket  tcp;
-        QUdpSocket udp;
-    } m_socket;
+    QTcpSocket m_socket;
 
     QString     m_user;
     QString     m_passwd;

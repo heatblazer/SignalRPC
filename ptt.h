@@ -11,7 +11,7 @@
 class ptt;
 
 // implplementing the AmiInterface //
-class ptt : public QObject, public AmiClient
+class ptt : public QObject
 {
     Q_OBJECT
 public:
