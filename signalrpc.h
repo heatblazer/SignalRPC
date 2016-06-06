@@ -3,31 +3,33 @@
 
 // Qt headers //
 #include <QObject>
+
+//use the union rule
 #include <QTcpSocket>
+#include <QUdpSocket>
+
 #include <QTimer>
 
-class AmiAction;
 
-class Ami : public QObject
+class SignalRPC : public QObject
 {
     Q_OBJECT
 // ami states
-    enum AmiState {
-        AMI_DISCONNECTED,   // tcp/tls soket is disconnected
-        AMI_CONNECTED,      // tcp/tls socket is connected
+    enum SignalStates {
+        SRPC_DISCONNECTED,
+        SRPC_CONNECTED,
 
-        AMI_READY,          // ami login is passed an ready for actions
-        AMI_NOT_READY,      // ami login not passed
+        SRPC_READY,
+        SRPC_NOT_READY,
     };
 
 
 public:
-    explicit Ami(const QString& amiUser, const QString& amiPass,
+    explicit SignalRPC(const QString& amiUser, const QString& amiPass,
                  QObject* parent = nullptr);
-    virtual ~Ami();
+    virtual ~SignalRPC();
 
     void init(void);
-    int sendAction(AmiAction* sendAction);
 
 private:
     void login();
@@ -35,8 +37,7 @@ private:
 
     // I`ll emit these so the client will know I am ready
 signals:
-// if we want to notify the world about this, also emit it where needed
-    void amiStateChanged(AmiState state);
+    void srpcStateChanged(SignalStates state);
 
 private slots:
     void hConnected();
@@ -46,18 +47,22 @@ private slots:
     void hLoginTimeout();
 
 // handle all changes in the state and route specific actions
-    void stateChange(void);
-
+    void handleStateChange(void);
 
 private:
-    AmiState    m_state;
-    QTcpSocket  m_socket;
-    QString     m_amiUser;
-    QString     m_amiPass;
+    SignalRPC    m_state;
+    // be careful when using the union setting member 1 will unset member 2
+
+    union {
+        QTcpSocket  tcp;
+        QUdpSocket udp;
+    } m_socket;
+
+    QString     m_user;
+    QString     m_passwd;
     QTimer      m_loginTimeout; // singleshot
 
     QString     m_dataBuffer;    // incomming data
-    QSet<AmiAction*> m_actions;
 
     //boolean check for only one init call!
     bool        m_isOneTime;
