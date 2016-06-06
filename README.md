@@ -1,3 +1,2 @@
-# AMI interface Version 2
+# Signal RPC
 
-written by mrbitmap and goro 

@@ -108,6 +108,7 @@ void SignalRPC::handleStateChange(void)
 {
     switch (m_state)
     {
+
     }
 
     emit srpcStateChanged(m_state);

@@ -3,11 +3,7 @@
 
 // Qt headers //
 #include <QObject>
-
-//use the union rule
 #include <QTcpSocket>
-#include <QUdpSocket>
-
 #include <QTimer>
 
 
@@ -22,6 +18,8 @@ class SignalRPC : public QObject
         SRPC_READY,
         SRPC_NOT_READY,
     };
+
+
 
 
 public:
