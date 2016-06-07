@@ -11,35 +11,35 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     SignalRPC* srpc1 = new SignalRPC("192.168.32.204",
-                                    4000,
+                                    "4000",
                                     "",
                                     "");
 
     SignalRPC* srpc2 = new SignalRPC("192.168.32.204",
-                                    4000,
+                                    "4000",
                                     "",
                                     "");
 
     SignalRPC* srpc3 = new SignalRPC("192.168.32.204",
-                                    4000,
+                                    "4000",
                                     "",
                                     "");
 
     SignalRPC* srpc4 = new SignalRPC("192.168.32.204",
-                                    4000,
+                                    "4000",
                                     "",
                                     "");
 
     SignalRPC* srpc5 = new SignalRPC("192.168.32.204",
-                                    4000,
+                                    "4000",
                                     "",
                                     "");
     SignalRPC* srpc6 = new SignalRPC("192.168.32.204",
-                                    4000,
+                                    "4000",
                                     "",
                                     "");
     SignalRPC* srpc7 = new SignalRPC("192.168.32.204",
-                                    4000,
+                                    "4000",
                                     "",
                                     "");
 

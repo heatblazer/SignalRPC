@@ -22,7 +22,7 @@ class SignalRPC : public QObject
 
 
 public:
-    explicit SignalRPC(const QString& host, const qint16 port,
+    explicit SignalRPC(const QString& host, const QString &port,
                         const QString& usr, const QString& pass,
                         QObject* parent = nullptr);
     virtual ~SignalRPC();
@@ -59,7 +59,7 @@ private:
     QString     m_passwd;
 
     QString     m_uri;
-    quint16     m_port;
+    QString     m_port;
 
     QTimer      m_loginTimeout; // singleshot
 

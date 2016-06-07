@@ -12,7 +12,7 @@
 
 
 SignalRPC::SignalRPC(const QString &host,
-                     const qint16 port,
+                     const QString& port,
                      const QString& usr,
                      const QString& pass, QObject* parent) :
 
@@ -48,7 +48,7 @@ void SignalRPC::init(void)
         if (p_socket == nullptr) {
 
         } else {
-            p_socket->connectToHost(m_uri, m_port);
+            p_socket->connectToHost(m_uri, (quint16)m_port.toInt());
            // handleStateChange();
 
 
@@ -129,7 +129,7 @@ void SignalRPC::handleStateChange(void)
     {
     // retry connection
     case SignalStates::SRPC_DISCONNECTED:
-        p_socket->connectToHost(m_uri, m_port);
+        p_socket->connectToHost(m_uri, (quint16) m_port.toUInt());
         break;
     }
 
