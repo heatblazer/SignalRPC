@@ -69,6 +69,7 @@ void ptt::hReleased()
 
 void ptt::handleTimeout()
 {
+    p_srpc->sendCommand(m_command);
     p_srpc->sendCommand("ka\n");
 }
 
