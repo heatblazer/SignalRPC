@@ -7,11 +7,11 @@
 #include <QObject>
 
 #include "signalrpc.h"
-
+#include "signalclient.h"
 class ptt;
 class SignalRPC;
 
-class ptt : public QObject
+class ptt : public QObject, public SignalClient
 {
     Q_OBJECT
 public:
@@ -21,12 +21,15 @@ public:
     void registerRpc(SignalRPC* pRpc);    //for now register an outside ami //
     void setCommand(const QString& com);    // register command to the button
 
+    // from signal client
+    QString& getName(void);
 
 private slots:
     void hClick(void);
     void hPress(void);
     void hReleased(void);
 
+    void handleTimeout(void);
 public:
     static QHBoxLayout hlayout;
 
@@ -42,6 +45,8 @@ private:
     QString                 m_name;
 
     QString                 m_command;
+
+    QTimer                  m_timeout;
 
 };
 

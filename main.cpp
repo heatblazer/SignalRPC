@@ -10,32 +10,77 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    SignalRPC* srpc = new SignalRPC("192.168.32.204",
+    SignalRPC* srpc1 = new SignalRPC("192.168.32.204",
                                     4000,
                                     "",
                                     "");
 
-    srpc->init();
+    SignalRPC* srpc2 = new SignalRPC("192.168.32.204",
+                                    4000,
+                                    "",
+                                    "");
+
+    SignalRPC* srpc3 = new SignalRPC("192.168.32.204",
+                                    4000,
+                                    "",
+                                    "");
+
+    SignalRPC* srpc4 = new SignalRPC("192.168.32.204",
+                                    4000,
+                                    "",
+                                    "");
+
+    SignalRPC* srpc5 = new SignalRPC("192.168.32.204",
+                                    4000,
+                                    "",
+                                    "");
+    SignalRPC* srpc6 = new SignalRPC("192.168.32.204",
+                                    4000,
+                                    "",
+                                    "");
+    SignalRPC* srpc7 = new SignalRPC("192.168.32.204",
+                                    4000,
+                                    "",
+                                    "");
+
+
+    srpc1->init();
+    srpc2->init();
+    srpc3->init();
+    srpc4->init();
+    srpc5->init();
+    srpc6->init();
+    srpc7->init();
 
     ptt p1("KA");
     ptt p2("FV");
     ptt p3("PN");
     ptt p4("PF");
 
+    ptt p5("12");
+    ptt p6("23");
+    ptt p7("34");
 
-    p1.registerRpc(srpc);
-    p2.registerRpc(srpc);
-    p3.registerRpc(srpc);
-    p4.registerRpc(srpc);
+
+
+    p1.registerRpc(srpc1);
+    p2.registerRpc(srpc2);
+    p3.registerRpc(srpc3);
+    p4.registerRpc(srpc4);
+    p5.registerRpc(srpc5);
+    p6.registerRpc(srpc6);
+    p7.registerRpc(srpc7);
+
 
 
     p1.setCommand("ka\n");
     p2.setCommand("fv\n");
     p3.setCommand("pn\n");
     p4.setCommand("pf\n");
+    p5.setCommand("12\n");
+    p6.setCommand("23\n");
+    p7.setCommand("34\n");
 
-
-    // get a handle to the ami //
 
     QWidget mw;
     mw.setLayout((QHBoxLayout*)&ptt::hlayout);
