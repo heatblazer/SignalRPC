@@ -10,34 +10,24 @@
 
 
 
-SignalRPC::SignalRPC(const QString& usr, const QString& pass, QObject* parent) :
+SignalRPC::SignalRPC(const QString &host,
+                     const qint16 port,
+                     const QString& usr,
+                     const QString& pass, QObject* parent) :
+
     QObject(parent),
     m_state(SignalStates::SRPC_DISCONNECTED),
-    m_socket(this),
-    m_user(usr),
-    m_passwd(pass),
+    p_socket(nullptr),
+    m_uri(host),
+    m_port(port),
+    m_user(usr),    // unused
+    m_passwd(pass), // unused
     m_loginTimeout(this),
     m_isOneTime(false)  // check for the init - don`t init 2 times
 {
     m_loginTimeout.setSingleShot(true);
 
-    // I am interested IF m_socket was created, I don`t want asserts with    //
-    // tryung to access not created socket  or a null pointer                //
-    // I will create the socket in the init since constructor can`t return a //
-    // value, and I might need to return error if socket can`t be allocated  //
-    // handle socket signals then route the AMI //
-    connect(&m_socket, SIGNAL(connected()),
-            this, SLOT(hConnected()));
-
-    connect(&m_socket, SIGNAL(disconnected()),
-            this, SLOT(hDisconnected()));
-
-    connect(&m_socket, SIGNAL(bytesWritten(qint64)),
-            this, SLOT(hBytesWritten(qint64)));
-
-    connect(&m_socket, SIGNAL(readyRead()),
-            this, SLOT(hReadyRead()));
-}
+    }
 
 
 SignalRPC::~SignalRPC()
@@ -53,50 +43,69 @@ void SignalRPC::init(void)
     // never call init 2 times - move the bool var in the class
     if (!m_isOneTime) {
         m_isOneTime = true;
-        handleStateChange();
-    }
+        p_socket = new QTcpSocket(this);
+        if (p_socket == nullptr) {
 
+        } else {
+            p_socket->connectToHost(m_uri, m_port);
+           // handleStateChange();
+
+
+            connect(p_socket, SIGNAL(connected()),
+                    this, SLOT(hConnected()));
+
+            connect(p_socket, SIGNAL(disconnected()),
+                    this, SLOT(hDisconnected()));
+
+            connect(p_socket, SIGNAL(bytesWritten(qint64)),
+                    this, SLOT(hBytesWritten(qint64)));
+
+            connect(p_socket, SIGNAL(readyRead()),
+                    this, SLOT(hReadyRead()));
+
+        }
+    }
+}
+
+void SignalRPC::sendCommand(const QString &com)
+{
+    p_socket->write(com.toLocal8Bit().constData());
 }
 
 
 void SignalRPC::hConnected()
 {
     m_state = SignalStates::SRPC_CONNECTED;
+    p_socket->write("fv\n");
     emit srpcStateChanged(m_state);
+
 }
 
 
 void SignalRPC::hDisconnected()
 {
     m_state = SignalStates::SRPC_DISCONNECTED;
-    emit srpcStateChanged(m_state);
+    std::cout << "Connection lost...\n";
+    handleStateChange();
 }
 
 
 void SignalRPC::hBytesWritten(qint64 bytes)
 {
-
+    // view the bytes written
 }
 
 
+void SignalRPC::hMessage(const QString& msg)
+{
+    //
+}
+
 void SignalRPC::hReadyRead()
 {
-#if 0
-    const QString ami_new_line = "\r\n";
-    char local_buff[512];
-    while (m_socket.canReadLine()) {
-        // read all //
-        // or if needed read line by line depends what do we need //
-        qint64 l = m_socket.readLine(local_buff, 512);
-        if (l!= -1) {
-            if (local_buff == ami_new_line) {
-                handleIncomingMessage();
-            } else {
-                m_dataBuffer.append(local_buff);
-            }
-        }
+    if (p_socket->canReadLine()) {
+        std::cout << p_socket->readAll().toStdString() << std::endl;
     }
-#endif
 }
 
 
@@ -106,9 +115,13 @@ void SignalRPC::hReadyRead()
 //!
 void SignalRPC::handleStateChange(void)
 {
+    // nothing for now ...
     switch (m_state)
     {
-
+    // retry connection
+    case SignalStates::SRPC_DISCONNECTED:
+        p_socket->connectToHost(m_uri, m_port);
+        break;
     }
 
     emit srpcStateChanged(m_state);
