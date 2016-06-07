@@ -1,0 +1,4 @@
+#ifndef SIGNALCLIENT_H
+#define SIGNALCLIENT_H
+
+#endif // SIGNALCLIENT_H
