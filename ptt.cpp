@@ -33,9 +33,21 @@ ptt::~ptt()
 {
 }
 
+
+void ptt::registerRpc(SignalRPC *pRpc)
+{
+    p_srpc = pRpc;
+}
+
+void ptt::setCommand(const QString &com)
+{
+    m_command = QString(com);
+}
+
+
 void ptt::hClick()
 {
-
+    p_srpc->sendCommand(m_command);
 }
 
 
@@ -46,9 +58,7 @@ void ptt::hReleased()
 // nothing interesting here //
 void ptt::hPress()
 {
-    // if you want to handle a held button
+
 }
-
-
 
 

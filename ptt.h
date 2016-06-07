@@ -9,8 +9,8 @@
 #include "signalrpc.h"
 
 class ptt;
+class SignalRPC;
 
-// implplementing the AmiInterface //
 class ptt : public QObject
 {
     Q_OBJECT
@@ -18,7 +18,9 @@ public:
     explicit ptt(const QString name, QObject* parent = nullptr);
     virtual ~ptt();
 
-    void registerAmi(SignalRPC* pRpc);    //for now register an outside ami //
+    void registerRpc(SignalRPC* pRpc);    //for now register an outside ami //
+    void setCommand(const QString& com);    // register command to the button
+
 
 private slots:
     void hClick(void);
@@ -28,11 +30,19 @@ private slots:
 public:
     static QHBoxLayout hlayout;
 
+
 private:
 
-    SignalRPC*            p_srpc;
-    QPushButton*    m_button; // pedal simulation //
-    QString         m_name;
+    // private field for inner classes
+
+private:
+
+    SignalRPC*              p_srpc;
+    QPushButton*            m_button;
+    QString                 m_name;
+
+    QString                 m_command;
+
 };
 
 #endif // PTT_H
