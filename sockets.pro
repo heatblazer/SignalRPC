@@ -14,9 +14,11 @@ TEMPLATE = app
 SOURCES += main.cpp \
     signalrpc.cpp \
     ptt.cpp \ 
-    signalclient.cpp
+    signalclient.cpp \
+    handlersiface.cpp
 
 HEADERS += \
     signalrpc.h \
     ptt.h \ 
-    signalclient.h
+    signalclient.h \
+    handlersiface.h
