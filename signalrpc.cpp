@@ -83,7 +83,17 @@ void SignalRPC::registerClient(SignalClientIface *pcl)
 void SignalRPC::sendCommand(const QString &com)
 {
     // a good check for the command in the final release is good
-    p_socket->write(com.toLocal8Bit().constData());
+
+    if (p_socket->write(com.toLocal8Bit().constData()) !=
+            com.size() )
+    {
+        ((ptt*)p_client->getClient())->m_info.m_err++;
+        QString errlog = ((ptt*)p_client->getClient())->toString();
+        logger::logMessage(BEGIN_LOG);
+        logger::logMessage("Could not write to socket... \n");
+        logger::logMessage(errlog.toLocal8Bit().constData());
+        logger::logMessage(END_LOG);
+    }
 }
 
 
