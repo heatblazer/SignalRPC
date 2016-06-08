@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 
     QWidget mw;
     mw.setLayout((QHBoxLayout*)&ptt::hlayout);
-    mw.show();
+   // mw.show();
 
 
     return a.exec();
