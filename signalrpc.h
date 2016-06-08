@@ -44,14 +44,14 @@ signals:
 
 private slots:
 
-
-    void handleMessage(const QString &msg);
-    void handleConnected();
-    void handleDisconnected();
-    void handleBytesWritten(qint64 bytes);
-    void handleReadyRead();
-
-    void handleStateChange(void);
+// these are to be implemented from Handelr Iface forcibly!
+// I want the user to implement these!!!
+    virtual void handleMessage(const QString &msg);
+    virtual void handleConnected();
+    virtual void handleDisconnected();
+    virtual void handleBytesWritten(qint64 bytes);
+    virtual void handleReadyRead();
+    virtual void handleStateChange(void);
 
 private:
     SignalStates    m_state;
