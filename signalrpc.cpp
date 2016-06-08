@@ -6,6 +6,7 @@
 #include <QTcpSocket>
 
 // Local headers //
+#include "ptt.h"
 #include "signalclient.h"
 #include "signalrpc.h"
 
@@ -68,7 +69,7 @@ void SignalRPC::init(void)
     }
 }
 
-void SignalRPC::registerClient(SignalClient *pcl)
+void SignalRPC::registerClient(SignalClientIface *pcl)
 {
     if (pcl != nullptr) {
         p_client = pcl;
@@ -112,7 +113,8 @@ void SignalRPC::hMessage(const QString& msg)
 void SignalRPC::hReadyRead()
 {
     if (p_socket->canReadLine()) {
-        std::cout << p_client->getName().toStdString() << std::endl;
+        std::cout << ((ptt*)p_client->getClient())->getName().toStdString()
+                  << std::endl;
         std::cout << p_socket->readAll().toStdString() << std::endl;
     }
 }

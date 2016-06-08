@@ -11,7 +11,7 @@
 class ptt;
 class SignalRPC;
 
-class ptt : public QObject, public SignalClient
+class ptt : public QObject, public SignalClientIface
 {
     Q_OBJECT
 public:
@@ -22,7 +22,8 @@ public:
     void setCommand(const QString& com);    // register command to the button
 
     // from signal client
-    QString& getName(void);
+    virtual SignalClientIface* getClient();
+    QString&    getName(void);
 
 private slots:
     void hClick(void);

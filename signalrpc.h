@@ -6,7 +6,8 @@
 #include <QTcpSocket>
 #include <QTimer>
 
-class SignalClient;
+// interface class for the client and it`s implementation
+class SignalClientIface;
 
 class SignalRPC : public QObject
 {
@@ -31,7 +32,7 @@ public:
 
     void sendCommand(const QString& com);
 
-    virtual void registerClient(SignalClient* pcl);
+    virtual void registerClient(SignalClientIface *pcl);
 
 private:
     // I`ll emit these so the client will know I am ready
@@ -53,7 +54,9 @@ private:
     // be careful when using the union setting member 1 will unset member 2
 
     QTcpSocket*     p_socket;
-    SignalClient*   p_client; // by the polimorhism power I can cast it to upper
+
+    // by the polimorhism power I can cast it to upper class
+    SignalClientIface*   p_client;
 
     QString     m_user;
     QString     m_passwd;

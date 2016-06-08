@@ -5,13 +5,12 @@
 
 // interface class to implement in the ptt
 
-class SignalClient
+class SignalClientIface
 {
 public:
-    SignalClient();
-    virtual ~SignalClient() = 0;
-
-    virtual QString& getName(void) = 0;
+    SignalClientIface();
+    virtual ~SignalClientIface() = 0;
+    virtual SignalClientIface* getClient(void) = 0;
 
 };
 

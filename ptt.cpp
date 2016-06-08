@@ -43,12 +43,17 @@ ptt::~ptt()
 void ptt::registerRpc(SignalRPC *pRpc)
 {
     p_srpc = pRpc;
-    p_srpc->registerClient(this);
+    p_srpc->registerClient((ptt*)this);
 }
 
 void ptt::setCommand(const QString &com)
 {
     m_command = QString(com);
+}
+
+SignalClientIface* ptt::getClient()
+{
+    return this;
 }
 
 QString &ptt::getName()

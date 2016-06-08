@@ -1,13 +1,13 @@
 #include "signalclient.h"
 
 
-SignalClient::SignalClient()
+SignalClientIface::SignalClientIface()
 {
 
 }
 
 
-SignalClient::~SignalClient()
+SignalClientIface::~SignalClientIface()
 {
 
 }

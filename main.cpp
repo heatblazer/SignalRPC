@@ -10,39 +10,21 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    SignalRPC* srpc1 = new SignalRPC("192.168.32.204",
-                                    "4000",
-                                    "",
-                                    "");
+    SignalRPC* srpc1 = new SignalRPC("192.168.32.204","4000","","");
 
-    SignalRPC* srpc2 = new SignalRPC("192.168.32.204",
-                                    "4000",
-                                    "",
-                                    "");
+    SignalRPC* srpc2 = new SignalRPC("192.168.32.204","4000","","");
 
-    SignalRPC* srpc3 = new SignalRPC("192.168.32.204",
-                                    "4000",
-                                    "",
-                                    "");
+    SignalRPC* srpc3 = new SignalRPC("192.168.32.204","4000","","");
 
-    SignalRPC* srpc4 = new SignalRPC("192.168.32.204",
-                                    "4000",
-                                    "",
-                                    "");
+    SignalRPC* srpc4 = new SignalRPC("192.168.32.204","4000","","");
 
-    SignalRPC* srpc5 = new SignalRPC("192.168.32.204",
-                                    "4000",
-                                    "",
-                                    "");
-    SignalRPC* srpc6 = new SignalRPC("192.168.32.204",
-                                    "4000",
-                                    "",
-                                    "");
-    SignalRPC* srpc7 = new SignalRPC("192.168.32.204",
-                                    "4000",
-                                    "",
-                                    "");
+    SignalRPC* srpc5 = new SignalRPC("192.168.32.204","4000","","");
 
+    SignalRPC* srpc6 = new SignalRPC("192.168.32.204","4000","","");
+
+    SignalRPC* srpc7 = new SignalRPC("192.168.32.204","4000","","");
+
+    SignalRPC* srpc8 = new SignalRPC("192.168.32.204", "4000", "","");
 
     srpc1->init();
     srpc2->init();
@@ -51,6 +33,7 @@ int main(int argc, char *argv[])
     srpc5->init();
     srpc6->init();
     srpc7->init();
+    srpc8->init();
 
     ptt p1("KA");
     ptt p2("FV");
@@ -61,6 +44,7 @@ int main(int argc, char *argv[])
     ptt p6("23");
     ptt p7("34");
 
+    ptt p8("parse error"); // expect parse error
 
 
     p1.registerRpc(srpc1);
@@ -70,6 +54,7 @@ int main(int argc, char *argv[])
     p5.registerRpc(srpc5);
     p6.registerRpc(srpc6);
     p7.registerRpc(srpc7);
+    p8.registerRpc(srpc8);
 
 
 
@@ -80,6 +65,7 @@ int main(int argc, char *argv[])
     p5.setCommand("12\n");
     p6.setCommand("23\n");
     p7.setCommand("34\n");
+    p8.setCommand("asdasdsa\n");
 
 
     QWidget mw;
