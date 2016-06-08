@@ -54,16 +54,17 @@ void SignalRPC::init(void)
 
 
             connect(p_socket, SIGNAL(connected()),
-                    this, SLOT(hConnected()));
+                    this, SLOT(handleConnected()));
 
             connect(p_socket, SIGNAL(disconnected()),
-                    this, SLOT(hDisconnected()));
+                    this, SLOT(handleDisconnected()));
 
             connect(p_socket, SIGNAL(bytesWritten(qint64)),
-                    this, SLOT(hBytesWritten(qint64)));
+                    this, SLOT(handleBytesWritten(qint64)));
 
             connect(p_socket, SIGNAL(readyRead()),
-                    this, SLOT(hReadyRead()));
+                    this, SLOT(handleReadyRead()));
+
 
         }
     }
@@ -82,7 +83,7 @@ void SignalRPC::sendCommand(const QString &com)
 }
 
 
-void SignalRPC::hConnected()
+void SignalRPC::handleConnected()
 {
     m_state = SignalStates::SRPC_CONNECTED;
     p_socket->write("fv\n");
@@ -91,7 +92,7 @@ void SignalRPC::hConnected()
 }
 
 
-void SignalRPC::hDisconnected()
+void SignalRPC::handleDisconnected()
 {
     m_state = SignalStates::SRPC_DISCONNECTED;
     std::cout << "Connection lost...\n";
@@ -99,23 +100,31 @@ void SignalRPC::hDisconnected()
 }
 
 
-void SignalRPC::hBytesWritten(qint64 bytes)
+void SignalRPC::handleBytesWritten(qint64 bytes)
 {
     // view the bytes written
+    m_state = SignalStates::SRPC_READY;
+    emit srpcStateChanged(m_state);
 }
 
 
-void SignalRPC::hMessage(const QString& msg)
+void SignalRPC::handleMessage(const QString& msg)
 {
-    //
+    // something to do to handle the received message
 }
 
-void SignalRPC::hReadyRead()
+void SignalRPC::handleReadyRead()
 {
-    if (p_socket->canReadLine()) {
+    if (p_socket->canReadLine()) { // if I can read a line
+        // this will get me a ptr to the implemented class by the force
+        // of C++ polymorphism
         std::cout << ((ptt*)p_client->getClient())->getName().toStdString()
                   << std::endl;
+
+        // I will read all that came to me
         std::cout << p_socket->readAll().toStdString() << std::endl;
+
+        // if needed I can handle messages
     }
 }
 
@@ -132,6 +141,17 @@ void SignalRPC::handleStateChange(void)
     // retry connection
     case SignalStates::SRPC_DISCONNECTED:
         p_socket->connectToHost(m_uri, (quint16) m_port.toUInt());
+        break;
+    case SignalStates::SRPC_CONNECTED:
+        // do something
+        break;
+    case SignalRPC::SRPC_NOT_READY:
+        // do something
+        break;
+    case SignalRPC::SRPC_READY:
+        // do something
+        break;
+    default:
         break;
     }
 

@@ -1,6 +1,9 @@
 #ifndef AMI_H
 #define AMI_H
 
+// interface to implement
+#include "handlersiface.h"
+
 // Qt headers //
 #include <QObject>
 #include <QTcpSocket>
@@ -9,7 +12,7 @@
 // interface class for the client and it`s implementation
 class SignalClientIface;
 
-class SignalRPC : public QObject
+class SignalRPC : public QObject, public HandlersIface
 {
     Q_OBJECT
 // ami states
@@ -40,13 +43,14 @@ signals:
     void srpcStateChanged(SignalStates state);
 
 private slots:
-    void hMessage(const QString &msg);
-    void hConnected();
-    void hDisconnected();
-    void hBytesWritten(qint64 bytes);
-    void hReadyRead();
 
-// handle all changes in the state and route specific actions
+
+    void handleMessage(const QString &msg);
+    void handleConnected();
+    void handleDisconnected();
+    void handleBytesWritten(qint64 bytes);
+    void handleReadyRead();
+
     void handleStateChange(void);
 
 private:
