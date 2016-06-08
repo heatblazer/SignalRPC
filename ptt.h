@@ -17,6 +17,14 @@ class ptt : public QObject, public SignalClientIface
 {
     Q_OBJECT
 public:
+    struct {
+        QString                 m_name;
+        QString                 m_command;
+        quint64                 m_err;
+        quint64                 m_disconnects;
+    } m_info;
+
+public:
     explicit ptt(const QString name, QObject* parent = nullptr);
     virtual ~ptt();
 
@@ -25,13 +33,16 @@ public:
 
     // from signal client
     virtual SignalClientIface* getClient();
+    virtual QString    toString(void);
+
     QString&    getName(void);
+
+
 
 private slots:
     void hClick(void);
     void hPress(void);
     void hReleased(void);
-
     void handleTimeout(void);
 public:
     static QHBoxLayout hlayout;
@@ -45,9 +56,8 @@ private:
 
     SignalRPC*              p_srpc;
     QPushButton*            m_button;
-    QString                 m_name;
 
-    QString                 m_command;
+
 
     QTimer                  m_timeout;
 

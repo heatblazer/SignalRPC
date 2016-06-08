@@ -61,17 +61,15 @@ private slots:
     virtual void handleStateChange(void);
 
 private:
-    SignalStates    m_state;
-    // be careful when using the union setting member 1 will unset member 2
-
     QTcpSocket*     p_socket;
 
     // by the polimorhism power I can cast it to upper class
     SignalClientIface*   p_client;
 
+    SignalStates    m_state;
+
     QString     m_user;
     QString     m_passwd;
-
     QString     m_uri;
     QString     m_port;
 

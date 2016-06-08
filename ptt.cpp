@@ -10,7 +10,8 @@ QHBoxLayout ptt::hlayout;
 
 ptt::ptt(const QString name, QObject *parent) : QObject(parent)
 {
-    m_name = name;
+    m_info.m_name = name;
+    m_info.m_err = m_info.m_disconnects = 0;
     m_button = new QPushButton;
 
     // keep in mind there are 2 signlas to handle choose which one //
@@ -22,12 +23,12 @@ ptt::ptt(const QString name, QObject *parent) : QObject(parent)
             this, SLOT(hReleased()));
 
 
-    m_timeout.setInterval(2500);
+    m_timeout.setInterval(1400);
     connect(&m_timeout, SIGNAL(timeout()),
             this, SLOT(handleTimeout()));
     m_timeout.start();
 
-    m_button->setText(m_name);
+    m_button->setText(m_info.m_name);
     m_button->setMinimumHeight(200);
     m_button->setMinimumWidth(200);
 
@@ -49,7 +50,7 @@ void ptt::registerRpc(SignalRPC *pRpc)
 
 void ptt::setCommand(const QString &com)
 {
-    m_command = QString(com);
+    m_info.m_command = QString(com);
 }
 
 SignalClientIface* ptt::getClient()
@@ -57,15 +58,33 @@ SignalClientIface* ptt::getClient()
     return this;
 }
 
+QString ptt::toString()
+{
+    QString s;
+    s.append("[command: (");
+    s.append(m_info.m_command);
+    s.append(")]\n");
+    s.append("[name: ");
+    s.append(m_info.m_name);
+    s.append("]\n");
+    s.append("[reading errors: ");
+    s.append(QString::number(m_info.m_err));
+    s.append("]\n");
+    s.append("[disconnect errors: ");
+    s.append(QString::number(m_info.m_disconnects));
+    s.append("]\n");
+    return s;
+}
+
 QString &ptt::getName()
 {
-    return m_name;
+    return this->m_info.m_name;
 }
 
 
 void ptt::hClick()
 {
-    p_srpc->sendCommand(m_command);
+    p_srpc->sendCommand(m_info.m_command);
 }
 
 
@@ -75,7 +94,7 @@ void ptt::hReleased()
 
 void ptt::handleTimeout()
 {
-    p_srpc->sendCommand(m_command);
+    p_srpc->sendCommand(m_info.m_command);
     p_srpc->sendCommand("ka\n");
 }
 
