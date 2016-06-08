@@ -106,7 +106,6 @@ void SignalRPC::handleDisconnected()
     QString s = ((ptt*)p_client->getClient())->toString();
     msg.append(s);
     msg.append(END_LOG);
-
     logger::logMessage(msg);
 
     handleStateChange();
@@ -117,7 +116,7 @@ void SignalRPC::handleBytesWritten(qint64 bytes)
 {
     // view the bytes written
     m_state = SignalStates::SRPC_READY;
-    if (bytes <= 0) {
+    if (bytes < ((ptt*)p_client->getClient())->m_info.m_command.size()) {
         ((ptt*)p_client->getClient())->m_info.m_err++;
         QString errlog = ((ptt*)p_client->getClient())->toString();
         logger::logMessage(BEGIN_LOG);
@@ -141,10 +140,18 @@ void SignalRPC::handleReadyRead()
         // of C++ polymorphism
         std::cout << ((ptt*)p_client->getClient())->getName().toStdString()
                   << std::endl;
-
         // I will read all that came to me
-        std::cout << p_socket->readAll().toStdString() << std::endl;
-
+        QByteArray b = p_socket->readAll();
+        if (b.size() <= 0) {
+            ((ptt*)p_client->getClient())->m_info.m_err++;
+            QString errlog = ((ptt*)p_client->getClient())->toString();
+            logger::logMessage(BEGIN_LOG);
+            logger::logMessage("Socket read no data! \n");
+            logger::logMessage(errlog.toLocal8Bit().constData());
+            logger::logMessage(END_LOG);
+        } else {
+            std::cout << b.toStdString() << std::endl;
+        }
         // if needed I can handle messages
     } else {
         ((ptt*)p_client->getClient())->m_info.m_err++;

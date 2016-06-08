@@ -4,7 +4,7 @@
 
 
 #define BEGIN_LOG "\n-------- B E G I N --------\n"
-#define END_LOG "\n-------- E N D --------\n"
+#define END_LOG "\n-------- E N D ------------\n"
 
 
 class logger
