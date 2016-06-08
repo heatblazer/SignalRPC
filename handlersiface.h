@@ -5,12 +5,13 @@
 #include <QtCore>
 namespace srpc {
 
+// these are to be implemented in the SignalRPC
 class HandlersIface
 {
 public:
     HandlersIface();
     virtual ~HandlersIface() = 0;
-
+    // slots or foo-s to implement
     virtual void handleMessage(const QString &msg) = 0;
     virtual void handleConnected(void) = 0;
     virtual void handleDisconnected(void) = 0;

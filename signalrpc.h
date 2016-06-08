@@ -16,11 +16,10 @@ class SignalClientIface;
 class SignalRPC : public QObject, public HandlersIface
 {
     Q_OBJECT
-// ami states
+// srpc states - add more if needed
     enum SignalStates {
         SRPC_DISCONNECTED,
         SRPC_CONNECTED,
-
         SRPC_READY,
         SRPC_NOT_READY,
     };
@@ -41,7 +40,14 @@ public:
 private:
     // I`ll emit these so the client will know I am ready
 signals:
+    // default usage
     void srpcStateChanged(SignalStates state);
+
+    // auxilary signals for the lazy
+    void srpcConnected(void);
+    void srpcDisconnected(void);
+    void srpcReady(void);
+    void srpcNotReady(void);
 
 private slots:
 
