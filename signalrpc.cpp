@@ -185,8 +185,11 @@ void SignalRPC::handleStateChange(void)
     {
     // retry connection
     case SignalStates::SRPC_DISCONNECTED:
-        // abort before trying the reconnection
-        p_socket->abort();
+        // close socket before trying the reconnection
+        if (p_socket->isOpen()) {
+            p_socket->close();
+        }
+        //p_socket->abort();
         p_socket->connectToHost(m_uri, (quint16) m_port.toUInt());
         break;
     case SignalStates::SRPC_CONNECTED:
