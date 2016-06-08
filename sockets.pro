@@ -15,10 +15,12 @@ SOURCES += main.cpp \
     signalrpc.cpp \
     ptt.cpp \ 
     signalclient.cpp \
-    handlersiface.cpp
+    handlersiface.cpp \
+    logger.cpp
 
 HEADERS += \
     signalrpc.h \
     ptt.h \ 
     signalclient.h \
-    handlersiface.h
+    handlersiface.h \
+    logger.h
