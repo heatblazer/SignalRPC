@@ -6,25 +6,29 @@
 #include "signalrpc.h"
 #include "ptt.h"
 
+
+
 int main(int argc, char *argv[])
 {
+    using namespace srpc;
+
     QApplication a(argc, argv);
 
-    SignalRPC* srpc1 = new SignalRPC("192.168.32.204","4000","","");
+    srpc::SignalRPC* srpc1 = new srpc::SignalRPC("192.168.32.204","4000","","");
 
-    SignalRPC* srpc2 = new SignalRPC("192.168.32.204","4000","","");
+    srpc::SignalRPC* srpc2 = new srpc::SignalRPC("192.168.32.204","4000","","");
 
-    SignalRPC* srpc3 = new SignalRPC("192.168.32.204","4000","","");
+    srpc::SignalRPC* srpc3 = new srpc::SignalRPC("192.168.32.204","4000","","");
 
-    SignalRPC* srpc4 = new SignalRPC("192.168.32.204","4000","","");
+    srpc::SignalRPC* srpc4 = new srpc::SignalRPC("192.168.32.204","4000","","");
 
-    SignalRPC* srpc5 = new SignalRPC("192.168.32.204","4000","","");
+    srpc::SignalRPC* srpc5 = new srpc::SignalRPC("192.168.32.204","4000","","");
 
-    SignalRPC* srpc6 = new SignalRPC("192.168.32.204","4000","","");
+    srpc::SignalRPC* srpc6 = new srpc::SignalRPC("192.168.32.204","4000","","");
 
-    SignalRPC* srpc7 = new SignalRPC("192.168.32.204","4000","","");
+    srpc::SignalRPC* srpc7 = new srpc::SignalRPC("192.168.32.204","4000","","");
 
-    SignalRPC* srpc8 = new SignalRPC("192.168.32.204", "4000", "","");
+    srpc::SignalRPC* srpc8 = new srpc::SignalRPC("192.168.32.204", "4000", "","");
 
     srpc1->init();
     srpc2->init();

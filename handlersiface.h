@@ -3,6 +3,7 @@
 
 // know qt core vars
 #include <QtCore>
+namespace srpc {
 
 class HandlersIface
 {
@@ -19,5 +20,6 @@ public:
 
 };
 
+} // namespace srpc
 
 #endif // HANDLERSIFACE_H

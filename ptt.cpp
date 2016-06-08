@@ -3,6 +3,7 @@
 #include <QDebug>
 
 
+using namespace srpc;
 
 QHBoxLayout ptt::hlayout;
 

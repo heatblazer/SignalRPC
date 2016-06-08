@@ -8,6 +8,8 @@
 
 #include "signalrpc.h"
 #include "signalclient.h"
+
+namespace srpc {
 class ptt;
 class SignalRPC;
 
@@ -18,7 +20,7 @@ public:
     explicit ptt(const QString name, QObject* parent = nullptr);
     virtual ~ptt();
 
-    void registerRpc(SignalRPC* pRpc);    //for now register an outside ami //
+    void registerRpc(srpc::SignalRPC* pRpc);    //for now register an outside ami //
     void setCommand(const QString& com);    // register command to the button
 
     // from signal client
@@ -51,4 +53,5 @@ private:
 
 };
 
+} // namespace srpc
 #endif // PTT_H

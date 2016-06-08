@@ -10,7 +10,7 @@
 #include "signalclient.h"
 #include "signalrpc.h"
 
-
+namespace srpc {
 
 SignalRPC::SignalRPC(const QString &host,
                      const QString& port,
@@ -158,4 +158,6 @@ void SignalRPC::handleStateChange(void)
     emit srpcStateChanged(m_state);
 }
 
+
+} // namespace srpc
 

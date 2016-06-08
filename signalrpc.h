@@ -9,6 +9,7 @@
 #include <QTcpSocket>
 #include <QTimer>
 
+namespace srpc {
 // interface class for the client and it`s implementation
 class SignalClientIface;
 
@@ -76,5 +77,6 @@ private:
     bool        m_isOneTime;
 
 };
+} // namespace srpc
 
 #endif // AMI_H

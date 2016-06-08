@@ -4,6 +4,7 @@
 #include <QString>
 
 // interface class to implement in the ptt
+namespace srpc {
 
 class SignalClientIface
 {
@@ -14,5 +15,6 @@ public:
 
 };
 
+} // namespace srpc
 
 #endif // SIGNALCLIENT_H
