@@ -55,10 +55,15 @@ void SignalRPC::init(void)
 
         } else {
             m_state = SignalStates::SRPC_DISCONNECTED;
- //           p_socket->connectToHost(m_uri, (quint16)m_port.toInt());
+            p_socket->connectToHost(m_uri, (quint16)m_port.toInt());
 
-            connect(p_socket, SIGNAL(error(QAbstractSocket::SocketError)),
-                    this, SLOT(handleMessage(QString)));
+           // connect(p_socket, SIGNAL(error(QAbstractSocket::SocketError)),
+           //         this, SLOT(handleMessage(QString)));
+
+            // handle QTcpSocket states if needed
+            connect(p_socket,
+                    SIGNAL(stateChanged(QAbstractSocket::SocketState)),
+                    this, SLOT(handleSocketState()));
 
             connect(p_socket, SIGNAL(connected()),
                     this, SLOT(handleConnected()));
@@ -163,7 +168,8 @@ void SignalRPC::handleReadyRead()
         // of C++ polymorphism
         std::cout << ((ptt*)p_client->getClient())->getName().toStdString()
                   << std::endl;
-        // I will read all that came to me
+        // I will read all that came to me also I need a better check
+        // what I `ve read
         QByteArray b = p_socket->readAll();
         if (b.size() <= 0) {
             ((ptt*)p_client->getClient())->m_info.m_err++;
@@ -193,22 +199,20 @@ void SignalRPC::handleReadyRead()
 //!
 void SignalRPC::handleStateChange(void)
 {
-    // nothing for now ...
+
     switch (m_state)
     {
     // retry connection
     case SignalStates::SRPC_DISCONNECTED:
+
         p_socket->connectToHost(m_uri, (quint16) m_port.toUInt());
-        if(p_socket->state() != QTcpSocket::ConnectedState)
-        {
-            int i = 0;
-            p_socket->abort();
+        if (p_socket->state() != QTcpSocket::ConnectedState) {
             m_state = SignalStates::SRPC_DISCONNECTED;
-            emit srpcStateChanged(m_state);
         } else {
             m_state = SignalStates::SRPC_CONNECTED;
-            emit srpcStateChanged(m_state);
         }
+
+        emit srpcStateChanged(m_state);
         break;
     case SignalStates::SRPC_CONNECTED:
         // do something
@@ -224,6 +228,27 @@ void SignalRPC::handleStateChange(void)
     }
 
     emit srpcStateChanged(m_state);
+}
+
+void SignalRPC::handleSocketState()
+{
+    switch (p_socket->state())
+    {
+    case QTcpSocket::UnconnectedState:
+        break;
+    case QTcpSocket::HostLookupState:
+        break;
+    case QTcpSocket::ConnectingState:
+        break;
+    case QTcpSocket::ConnectedState:
+        break;
+    case QTcpSocket::BoundState:
+        break;
+    case QTcpSocket::ListeningState:
+        break;
+    case QTcpSocket::ClosingState:
+        break;
+    }
 }
 
 

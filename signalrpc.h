@@ -60,6 +60,8 @@ private slots:
     virtual void handleReadyRead();
     virtual void handleStateChange(void);
 
+    void handleSocketState(void); // handle tcp socket state change
+
 private:
     QTcpSocket*     p_socket;
 
