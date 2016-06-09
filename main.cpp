@@ -72,9 +72,9 @@ int main(int argc, char *argv[])
     p8.setCommand("asdasdsa\n");
 
 
-   // QWidget mw;
-   // mw.setLayout((QHBoxLayout*)&ptt::hlayout);
-   // mw.show();
+    QWidget mw;
+    mw.setLayout((QHBoxLayout*)&ptt::hlayout);
+    mw.show();
 
 
     return a.exec();
