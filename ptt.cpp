@@ -23,10 +23,18 @@ ptt::ptt(const QString name, QObject *parent) : QObject(parent)
             this, SLOT(hReleased()));
 
 
-    m_timeout.setInterval(1400);
-    connect(&m_timeout, SIGNAL(timeout()),
-            this, SLOT(handleTimeout()));
-    m_timeout.start();
+    m_timeout1.setInterval(2000);
+    connect(&m_timeout1, SIGNAL(timeout()),
+            this, SLOT(handleTimeout1()));
+    m_timeout1.start();
+
+
+    m_timeout2.setInterval(1000);
+    connect(&m_timeout2, SIGNAL(timeout()),
+            this, SLOT(handleTimeout2()));
+    m_timeout2.start();
+
+
 
     m_button->setText(m_info.m_name);
     m_button->setMinimumHeight(200);
@@ -92,10 +100,15 @@ void ptt::hReleased()
 {
 }
 
-void ptt::handleTimeout()
+void ptt::handleTimeout1()
+{
+    p_srpc->sendCommand("ka\n");
+}
+
+
+void ptt::handleTimeout2()
 {
     p_srpc->sendCommand(m_info.m_command);
-    p_srpc->sendCommand("ka\n");
 }
 
 // nothing interesting here //

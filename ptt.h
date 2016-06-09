@@ -43,7 +43,9 @@ private slots:
     void hClick(void);
     void hPress(void);
     void hReleased(void);
-    void handleTimeout(void);
+    void handleTimeout1(void);
+    void handleTimeout2(void);
+
 public:
     static QHBoxLayout hlayout;
 
@@ -59,7 +61,8 @@ private:
 
 
 
-    QTimer                  m_timeout;
+    QTimer                  m_timeout1;
+    QTimer                  m_timeout2;
 
 };
 
