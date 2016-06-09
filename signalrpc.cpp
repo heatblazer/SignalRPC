@@ -54,9 +54,11 @@ void SignalRPC::init(void)
         if (p_socket == nullptr) {
 
         } else {
-            p_socket->connectToHost(m_uri, (quint16)m_port.toInt());
-           // handleStateChange();
+            m_state = SignalStates::SRPC_DISCONNECTED;
+ //           p_socket->connectToHost(m_uri, (quint16)m_port.toInt());
 
+            connect(p_socket, SIGNAL(error(QAbstractSocket::SocketError)),
+                    this, SLOT(handleMessage(QString)));
 
             connect(p_socket, SIGNAL(connected()),
                     this, SLOT(handleConnected()));
@@ -69,6 +71,7 @@ void SignalRPC::init(void)
 
             connect(p_socket, SIGNAL(readyRead()),
                     this, SLOT(handleReadyRead()));
+             handleStateChange();
         }
     }
 }
@@ -83,16 +86,26 @@ void SignalRPC::registerClient(SignalClientIface *pcl)
 void SignalRPC::sendCommand(const QString &com)
 {
     // a good check for the command in the final release is good
-
-    if (p_socket->write(com.toLocal8Bit().constData()) !=
-            com.size() )
-    {
+    if (p_socket->state() == QTcpSocket::ConnectedState) {
+        if (p_socket->write(com.toLocal8Bit().constData()) !=
+                com.size() )
+        {
+            ((ptt*)p_client->getClient())->m_info.m_err++;
+            QString errlog = ((ptt*)p_client->getClient())->toString();
+            logger::logMessage(BEGIN_LOG);
+            logger::logMessage("Could not write to socket... \n");
+            logger::logMessage(errlog.toLocal8Bit().constData());
+            logger::logMessage(END_LOG);
+        }
+    } else {
         ((ptt*)p_client->getClient())->m_info.m_err++;
         QString errlog = ((ptt*)p_client->getClient())->toString();
         logger::logMessage(BEGIN_LOG);
-        logger::logMessage("Could not write to socket... \n");
+        logger::logMessage("Socket is not connected... \n");
         logger::logMessage(errlog.toLocal8Bit().constData());
         logger::logMessage(END_LOG);
+        m_state = SignalStates::SRPC_DISCONNECTED;
+        handleStateChange();
     }
 }
 
@@ -185,12 +198,17 @@ void SignalRPC::handleStateChange(void)
     {
     // retry connection
     case SignalStates::SRPC_DISCONNECTED:
-        // close socket before trying the reconnection
-        if (p_socket->isOpen()) {
-            p_socket->close();
-        }
-        //p_socket->abort();
         p_socket->connectToHost(m_uri, (quint16) m_port.toUInt());
+        if(p_socket->state() != QTcpSocket::ConnectedState)
+        {
+            int i = 0;
+            p_socket->abort();
+            m_state = SignalStates::SRPC_DISCONNECTED;
+            emit srpcStateChanged(m_state);
+        } else {
+            m_state = SignalStates::SRPC_CONNECTED;
+            emit srpcStateChanged(m_state);
+        }
         break;
     case SignalStates::SRPC_CONNECTED:
         // do something
