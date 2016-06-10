@@ -5,6 +5,7 @@
 
 #include "signalrpc.h"
 #include "ptt.h"
+#include "defs.h"
 
 
 
@@ -28,7 +29,6 @@ int main(int argc, char *argv[])
 
     srpc::SignalRPC* srpc7 = new srpc::SignalRPC("192.168.32.204","4000","","");
 
-    srpc::SignalRPC* srpc8 = new srpc::SignalRPC("192.168.32.204", "4000", "","");
 
   //  srpc1->init();
     srpc2->init();
@@ -37,18 +37,19 @@ int main(int argc, char *argv[])
     srpc5->init();
     srpc6->init();
     srpc7->init();
-    srpc8->init();
+
 
  //   ptt p1("KA");
-    ptt p2("FV");
-    ptt p3("PN");
-    ptt p4("PF");
+    ptt p2("FV", VampireResp::FV);
+    ptt p3("PN", VampireResp::PN);
+    ptt p4("PF", VampireResp::PF);
 
-    ptt p5("12");
-    ptt p6("23");
-    ptt p7("34");
+    ptt p5("12", VampireResp::DTMF);
+    ptt p6("23", VampireResp::DTMF);
+    ptt p7("34", VampireResp::DTMF);
 
-    ptt p8("parse error"); // expect parse error
+
+//    ptt p8("parse error", VampireResp::PARSE_ERROR); // expect parse error
 
 
   //  p1.registerRpc(srpc1);
@@ -58,7 +59,7 @@ int main(int argc, char *argv[])
     p5.registerRpc(srpc5);
     p6.registerRpc(srpc6);
     p7.registerRpc(srpc7);
-    p8.registerRpc(srpc8);
+//    p8.registerRpc(srpc8);
 
 
 
@@ -69,7 +70,7 @@ int main(int argc, char *argv[])
     p5.setCommand("12\n");
     p6.setCommand("23\n");
     p7.setCommand("34\n");
-    p8.setCommand("asdasdsa\n");
+   // p8.setCommand("asdasdsa\n");
 
 
     QWidget mw;
