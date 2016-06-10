@@ -8,12 +8,15 @@
 #include "defs.h"
 
 
+#include <unistd.h> // fork
+
 
 int main(int argc, char *argv[])
 {
     using namespace srpc;
 
     QApplication a(argc, argv);
+
 
   //  srpc::SignalRPC* srpc1 = new srpc::SignalRPC("192.168.32.204","4000","","");
 
@@ -51,7 +54,6 @@ int main(int argc, char *argv[])
 
 //    ptt p8("parse error", VampireResp::PARSE_ERROR); // expect parse error
 
-
   //  p1.registerRpc(srpc1);
     p2.registerRpc(srpc2);
     p3.registerRpc(srpc3);
@@ -71,12 +73,9 @@ int main(int argc, char *argv[])
     p6.setCommand("23\n");
     p7.setCommand("34\n");
    // p8.setCommand("asdasdsa\n");
-
-
-    QWidget mw;
-    mw.setLayout((QHBoxLayout*)&ptt::hlayout);
-    mw.show();
-
+//    QWidget mw;
+//    mw.setLayout((QHBoxLayout*)&ptt::hlayout);
+//    mw.show();
 
     return a.exec();
 }
