@@ -170,28 +170,30 @@ void SignalRPC::handleReadyRead()
                   << std::endl;
         // I will read all that came to me also I need a better check
         // what I `ve read
-        QByteArray b = p_socket->readLine();
-        if (b.size() <= 0) {
-            ((ptt*)p_client->getClient())->m_info.m_err++;
-            QString errlog = ((ptt*)p_client->getClient())->toString();
-            logger::logMessage(BEGIN_LOG);
-            logger::logMessage("Socket read no data! \n");
-            logger::logMessage(errlog.toLocal8Bit().constData());
-            logger::logMessage(END_LOG);
-        } else {
-            // add new check to view a valid response
-            // preserve the newline
-            std::cout << b.toStdString() << std::endl;
-
-            if (((ptt*)p_client)->isValidResponseFromVampire(b)) {
-
-            } else {
+        while (p_socket->canReadLine()) {
+            QByteArray b = p_socket->readLine();
+            if (b.size() <= 0) {
                 ((ptt*)p_client->getClient())->m_info.m_err++;
                 QString errlog = ((ptt*)p_client->getClient())->toString();
                 logger::logMessage(BEGIN_LOG);
-                logger::logMessage("Read invalid data from socket\n");
+                logger::logMessage("Socket read no data! \n");
                 logger::logMessage(errlog.toLocal8Bit().constData());
                 logger::logMessage(END_LOG);
+            } else {
+                // add new check to view a valid response
+                // preserve the newline
+                std::cout << b.toStdString() << std::endl;
+
+                if (((ptt*)p_client)->isValidResponseFromVampire(b)) {
+
+                } else {
+                    ((ptt*)p_client->getClient())->m_info.m_err++;
+                    QString errlog = ((ptt*)p_client->getClient())->toString();
+                    logger::logMessage(BEGIN_LOG);
+                    logger::logMessage("Read invalid data from socket\n");
+                    logger::logMessage(errlog.toLocal8Bit().constData());
+                    logger::logMessage(END_LOG);
+                }
             }
         }
         // if needed I can handle messages
