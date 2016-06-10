@@ -6,6 +6,8 @@
 #include <QPushButton>
 #include <QObject>
 
+
+#include "defs.h" // for the vmp states
 #include "signalrpc.h"
 #include "signalclient.h"
 
@@ -25,7 +27,8 @@ public:
     } m_info;
 
 public:
-    explicit ptt(const QString name, QObject* parent = nullptr);
+                // name of the button // vamp enum  // qparent
+    explicit ptt(const QString name, VampireResp vs, QObject* parent = nullptr);
     virtual ~ptt();
 
     void registerRpc(srpc::SignalRPC* pRpc);    //for now register an outside ami //
@@ -37,14 +40,16 @@ public:
 
     QString&    getName(void);
 
-
-
 private slots:
     void hClick(void);
     void hPress(void);
     void hReleased(void);
     void handleTimeout1(void);
     void handleTimeout2(void);
+
+public:
+    // if the response from the vmp is good
+    bool isValidResponseFromVampire(const QString& data);
 
 public:
     static QHBoxLayout hlayout;
@@ -59,10 +64,10 @@ private:
     SignalRPC*              p_srpc;
     QPushButton*            m_button;
 
-
-
     QTimer                  m_timeout1;
     QTimer                  m_timeout2;
+
+    VampireResp             m_vstate;
 
 };
 

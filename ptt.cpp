@@ -2,13 +2,16 @@
 #include <iostream>
 #include <QDebug>
 
+#define IS_DIGIT(a) \
+    (((a) >= '0') && ((a) <= '9'))
 
 using namespace srpc;
 
 QHBoxLayout ptt::hlayout;
 
 
-ptt::ptt(const QString name, QObject *parent) : QObject(parent)
+ptt::ptt(const QString name, VampireResp vs, QObject *parent) : QObject(parent)
+, m_vstate(vs)
 {
     m_info.m_name = name;
     m_info.m_err = m_info.m_disconnects = 0;
@@ -66,6 +69,7 @@ SignalClientIface* ptt::getClient()
     return this;
 }
 
+// return a dump of the obj
 QString ptt::toString()
 {
     QString s;
@@ -109,6 +113,47 @@ void ptt::handleTimeout1()
 void ptt::handleTimeout2()
 {
     p_srpc->sendCommand(m_info.m_command);
+}
+
+bool ptt::isValidResponseFromVampire(const QString& data)
+{
+    switch (m_vstate) {
+    case KA:
+        if (QString::compare(data, "ok\n", Qt::CaseInsensitive)==0) {
+            return true;
+        }
+    case FV:
+        if (QString::compare(data, "1.0\n", Qt::CaseInsensitive) == 0) {
+            return true;
+        }
+    case PN:
+    case PF:
+        if (QString::compare(data, "ok_ptt\n", Qt::CaseInsensitive) == 0) {
+            return true;
+        }
+    case DTMF:
+        if (QString::compare(data, "ok_tone\n", Qt::CaseInsensitive)==0){
+            return true;
+        }
+#if 0
+        if (IS_DIGIT(data.toLocal8Bit().constData()[0]) &&
+            IS_DIGIT(data.toLocal8Bit().constData()[1]) &&
+            data.toLocal8Bit().constData()[0] != data.toLocal8Bit().constData()[1]){
+            return true;
+        }
+#endif
+    case BUSY:
+        if (QString::compare(data, "busy\n", Qt::CaseInsensitive)==0) {
+            return true;
+        }
+    case PARSE_ERROR:
+        if (QString::compare(data, "parse error\n", Qt::CaseInsensitive)) {
+            return true;
+        }
+
+    default:
+        return false;
+    }
 }
 
 // nothing interesting here //
