@@ -5,7 +5,7 @@ QT += widgets
 
 CONFIG += c++11
 
-TARGET = sockets
+TARGET = vampire
 CONFIG += console
 CONFIG -= app_bundle
 
