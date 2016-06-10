@@ -182,8 +182,10 @@ void SignalRPC::handleReadyRead()
             } else {
                 // add new check to view a valid response
                 // preserve the newline
+                // for the daemonizing dont print
+#if 0
                 std::cout << b.toStdString() << std::endl;
-
+#endif
                 if (((ptt*)p_client)->isValidResponseFromVampire(b)) {
 
                 } else {
