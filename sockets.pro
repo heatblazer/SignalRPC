@@ -23,4 +23,5 @@ HEADERS += \
     ptt.h \ 
     signalclient.h \
     handlersiface.h \
-    logger.h
+    logger.h \
+    defs.h
