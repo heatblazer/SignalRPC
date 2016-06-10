@@ -12,8 +12,8 @@
 namespace srpc {
 // interface class for the client and it`s implementation
 class SignalClientIface;
-
-class SignalRPC : public QObject, public HandlersIface
+                                 // remove HandlerInterface and just concrete the hndl
+class SignalRPC : public QObject//, public HandlersIface
 {
     Q_OBJECT
 // srpc states - add more if needed
@@ -49,7 +49,7 @@ signals:
     void srpcReady(void);
     void srpcNotReady(void);
 
-private slots:
+public slots:
 
 // these are to be implemented from Handelr Iface forcibly!
 // I want the user to implement these!!!
@@ -59,6 +59,8 @@ private slots:
     virtual void handleBytesWritten(qint64 bytes);
     virtual void handleReadyRead();
     virtual void handleStateChange(void);
+
+private slots:
 
     void handleSocketState(void); // handle tcp socket state change
 

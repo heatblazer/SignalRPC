@@ -11,8 +11,9 @@ class SignalClientIface
 public:
     SignalClientIface();
     virtual ~SignalClientIface() = 0;
-    virtual SignalClientIface* getClient(void) = 0;
-    virtual QString          toString(void) = 0;
+
+    // focribly implement a toString method
+    virtual QString toString(void) = 0;
 
 };
 

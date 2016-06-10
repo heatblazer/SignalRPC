@@ -13,8 +13,6 @@
 // logger //
 #include "logger.h"
 
-
-
 namespace srpc {
 
 SignalRPC::SignalRPC(const QString &host,
@@ -95,16 +93,16 @@ void SignalRPC::sendCommand(const QString &com)
         if (p_socket->write(com.toLocal8Bit().constData()) !=
                 com.size() )
         {
-            ((ptt*)p_client->getClient())->m_info.m_err++;
-            QString errlog = ((ptt*)p_client->getClient())->toString();
+            ((ptt*)p_client)->m_info.m_err++;
+            QString errlog = ((ptt*)p_client)->toString();
             logger::logMessage(BEGIN_LOG);
             logger::logMessage("Could not write to socket... \n");
             logger::logMessage(errlog.toLocal8Bit().constData());
             logger::logMessage(END_LOG);
         }
     } else {
-        ((ptt*)p_client->getClient())->m_info.m_err++;
-        QString errlog = ((ptt*)p_client->getClient())->toString();
+        ((ptt*)p_client)->m_info.m_err++;
+        QString errlog = ((ptt*)p_client)->toString();
         logger::logMessage(BEGIN_LOG);
         logger::logMessage("Socket is not connected... \n");
         logger::logMessage(errlog.toLocal8Bit().constData());
@@ -128,10 +126,10 @@ void SignalRPC::handleDisconnected()
 {
     m_state = SignalStates::SRPC_DISCONNECTED;
 
-    ((ptt*)p_client->getClient())->m_info.m_disconnects++;
+    ((ptt*)p_client)->m_info.m_disconnects++;
     QString msg(BEGIN_LOG);
     msg.append("Connection lost!\n");
-    QString s = ((ptt*)p_client->getClient())->toString();
+    QString s = ((ptt*)p_client)->toString();
     msg.append(s);
     msg.append(END_LOG);
     logger::logMessage(msg);
@@ -144,9 +142,9 @@ void SignalRPC::handleBytesWritten(qint64 bytes)
 {
     // view the bytes written
     m_state = SignalStates::SRPC_READY;
-    if (bytes < ((ptt*)p_client->getClient())->m_info.m_command.size()) {
-        ((ptt*)p_client->getClient())->m_info.m_err++;
-        QString errlog = ((ptt*)p_client->getClient())->toString();
+    if (bytes < ((ptt*)p_client)->m_info.m_command.size()) {
+        ((ptt*)p_client)->m_info.m_err++;
+        QString errlog = ((ptt*)p_client)->toString();
         logger::logMessage(BEGIN_LOG);
         logger::logMessage("Could not write bytes... \n");
         logger::logMessage(errlog.toLocal8Bit().constData());
@@ -156,25 +154,27 @@ void SignalRPC::handleBytesWritten(qint64 bytes)
 }
 
 
+
 void SignalRPC::handleMessage(const QString& msg)
 {
     // something to do to handle the received message
 }
+
 
 void SignalRPC::handleReadyRead()
 {
     if (p_socket->canReadLine()) { // if I can read a line
         // this will get me a ptr to the implemented class by the force
         // of C++ polymorphism
-        std::cout << ((ptt*)p_client->getClient())->getName().toStdString()
+        std::cout << ((ptt*)p_client)->getName().toStdString()
                   << std::endl;
         // I will read all that came to me also I need a better check
         // what I `ve read
         while (p_socket->canReadLine()) {
             QByteArray b = p_socket->readLine();
             if (b.size() <= 0) {
-                ((ptt*)p_client->getClient())->m_info.m_err++;
-                QString errlog = ((ptt*)p_client->getClient())->toString();
+                ((ptt*)p_client)->m_info.m_err++;
+                QString errlog = ((ptt*)p_client)->toString();
                 logger::logMessage(BEGIN_LOG);
                 logger::logMessage("Socket read no data! \n");
                 logger::logMessage(errlog.toLocal8Bit().constData());
@@ -187,8 +187,8 @@ void SignalRPC::handleReadyRead()
                 if (((ptt*)p_client)->isValidResponseFromVampire(b)) {
 
                 } else {
-                    ((ptt*)p_client->getClient())->m_info.m_err++;
-                    QString errlog = ((ptt*)p_client->getClient())->toString();
+                    ((ptt*)p_client)->m_info.m_err++;
+                    QString errlog = ((ptt*)p_client)->toString();
                     logger::logMessage(BEGIN_LOG);
                     logger::logMessage("Read invalid data from socket\n");
                     logger::logMessage(errlog.toLocal8Bit().constData());
@@ -198,8 +198,8 @@ void SignalRPC::handleReadyRead()
         }
         // if needed I can handle messages
     } else {
-        ((ptt*)p_client->getClient())->m_info.m_err++;
-        QString errlog = ((ptt*)p_client->getClient())->toString();
+        ((ptt*)p_client)->m_info.m_err++;
+        QString errlog = ((ptt*)p_client)->toString();
         logger::logMessage(BEGIN_LOG);
         logger::logMessage("Socket colud not read a response line\n");
         logger::logMessage(errlog.toLocal8Bit().constData());
