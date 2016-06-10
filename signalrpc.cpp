@@ -170,7 +170,7 @@ void SignalRPC::handleReadyRead()
                   << std::endl;
         // I will read all that came to me also I need a better check
         // what I `ve read
-        QByteArray b = p_socket->readAll();
+        QByteArray b = p_socket->readLine();
         if (b.size() <= 0) {
             ((ptt*)p_client->getClient())->m_info.m_err++;
             QString errlog = ((ptt*)p_client->getClient())->toString();
@@ -179,7 +179,20 @@ void SignalRPC::handleReadyRead()
             logger::logMessage(errlog.toLocal8Bit().constData());
             logger::logMessage(END_LOG);
         } else {
+            // add new check to view a valid response
+            // preserve the newline
             std::cout << b.toStdString() << std::endl;
+
+            if (((ptt*)p_client)->isValidResponseFromVampire(b)) {
+
+            } else {
+                ((ptt*)p_client->getClient())->m_info.m_err++;
+                QString errlog = ((ptt*)p_client->getClient())->toString();
+                logger::logMessage(BEGIN_LOG);
+                logger::logMessage("Read invalid data from socket\n");
+                logger::logMessage(errlog.toLocal8Bit().constData());
+                logger::logMessage(END_LOG);
+            }
         }
         // if needed I can handle messages
     } else {
@@ -230,6 +243,10 @@ void SignalRPC::handleStateChange(void)
     emit srpcStateChanged(m_state);
 }
 
+
+/** handle the socket state if needed for extra precaution
+ * @brief SignalRPC::handleSocketState
+ */
 void SignalRPC::handleSocketState()
 {
     switch (p_socket->state())

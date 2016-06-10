@@ -82,7 +82,13 @@ private:
     //boolean check for only one init call!
     bool        m_isOneTime;
 
+
+    // TODO remove
+private:
+
+
 };
+
 } // namespace srpc
 
 #endif // AMI_H
