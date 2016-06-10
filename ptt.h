@@ -44,8 +44,11 @@ private slots:
     void hClick(void);
     void hPress(void);
     void hReleased(void);
+
+    // handle timer
     void handleTimeout1(void);
     void handleTimeout2(void);
+    void handleTimeout3(void);
 
 public:
     // if the response from the vmp is good
@@ -54,18 +57,14 @@ public:
 public:
     static QHBoxLayout hlayout;
 
-
-private:
-
-    // private field for inner classes
-
 private:
 
     SignalRPC*              p_srpc;
     QPushButton*            m_button;
 
-    QTimer                  m_timeout1;
-    QTimer                  m_timeout2;
+    QTimer                  m_timeout1; // timeout for test command
+    QTimer                  m_timeout2; // timeput for keepalive
+    static QTimer           m_timeout3; // for timed logging
 
     VampireResp             m_vstate;
 

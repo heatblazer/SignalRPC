@@ -1,6 +1,8 @@
 #include "ptt.h"
+
 #include <iostream>
-#include <QDebug>
+
+#include "logger.h"
 
 #define IS_DIGIT(a) \
     (((a) >= '0') && ((a) <= '9'))
@@ -8,7 +10,7 @@
 using namespace srpc;
 
 QHBoxLayout ptt::hlayout;
-
+QTimer ptt::m_timeout3;
 
 ptt::ptt(const QString name, VampireResp vs, QObject *parent) : QObject(parent)
 , m_vstate(vs)
@@ -37,6 +39,11 @@ ptt::ptt(const QString name, VampireResp vs, QObject *parent) : QObject(parent)
             this, SLOT(handleTimeout2()));
     m_timeout2.start();
 
+    // log to file eacch 2 hours
+    m_timeout3.setInterval(2*3600000);
+    connect(&m_timeout3, SIGNAL(timeout()),
+            this, SLOT(handleTimeout3()));
+    m_timeout3.start();
 
 
     m_button->setText(m_info.m_name);
@@ -113,6 +120,19 @@ void ptt::handleTimeout1()
 void ptt::handleTimeout2()
 {
     p_srpc->sendCommand(m_info.m_command);
+}
+
+void ptt::handleTimeout3()
+{
+    QString log;
+    log.append("\n---------------------------");
+    log.append("Timed log: ");
+    log.append(QDateTime::currentDateTime().toString());
+    log.append("---------------------------\n");
+
+    logger::logMessage(log);
+
+
 }
 
 bool ptt::isValidResponseFromVampire(const QString& data)
