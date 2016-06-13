@@ -90,9 +90,11 @@ void SignalRPC::sendCommand(const QString &com)
 {
     // a good check for the command in the final release is good
     if (p_socket->state() == QTcpSocket::ConnectedState) {
-        if (p_socket->write(com.toLocal8Bit().constData()) !=
+        if (p_socket->write(com.toLocal8Bit().constData()) <
                 com.size() )
         {
+            p_socket->abort();
+            m_state = SRPC_DISCONNECTED;
             ((ptt*)p_client)->m_info.m_err++;
             QString errlog = ((ptt*)p_client)->toString();
             logger::logMessage(BEGIN_LOG);
