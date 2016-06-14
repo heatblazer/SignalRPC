@@ -43,13 +43,13 @@ int main(int argc, char *argv[])
 
 
  //   ptt p1("KA");
-    ptt p2("FV", VampireResp::FV);
-    ptt p3("PN", VampireResp::PN);
-    ptt p4("PF", VampireResp::PF);
+    ptt p2("FV", 1200, 6000);
+    ptt p3("PN", 1200, 50); // timeout 50 ms
+    ptt p4("PF", 1200, 50);
 
-    ptt p5("12", VampireResp::DTMF);
-    ptt p6("23", VampireResp::DTMF);
-    ptt p7("34", VampireResp::DTMF);
+    ptt p5("12", 1200, 3000);
+    ptt p6("23", 1200, 6000);
+    ptt p7("34", 1200, 9000);
 
 
 //    ptt p8("parse error", VampireResp::PARSE_ERROR); // expect parse error
@@ -73,9 +73,9 @@ int main(int argc, char *argv[])
     p6.setCommand("23\n");
     p7.setCommand("34\n");
    // p8.setCommand("asdasdsa\n");
-//    QWidget mw;
-//    mw.setLayout((QHBoxLayout*)&ptt::hlayout);
-//    mw.show();
+    QWidget mw;
+    mw.setLayout((QHBoxLayout*)&ptt::hlayout);
+    mw.show();
 
     return a.exec();
 }
