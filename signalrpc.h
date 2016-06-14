@@ -35,6 +35,9 @@ public:
 
     void sendCommand(const QString& com);
 
+    // test
+    void closeConnection(void);
+
     virtual void registerClient(SignalClientIface *pcl);
 
 private:

@@ -114,6 +114,11 @@ void SignalRPC::sendCommand(const QString &com)
     }
 }
 
+void SignalRPC::closeConnection()
+{
+    p_socket->abort();
+}
+
 
 void SignalRPC::handleConnected()
 {
