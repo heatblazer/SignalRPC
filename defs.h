@@ -10,6 +10,7 @@ enum VampireResp
     PF,
     DTMF,
     BUSY,
+    BUSY_PTT,
     PARSE_ERROR
 };
 
