@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "logger.h"
-
+#define HOURS 1
 #define IS_DIGIT(a) \
     (((a) >= '0') && ((a) <= '9'))
 
@@ -11,9 +11,11 @@ using namespace srpc;
 
 QHBoxLayout ptt::hlayout;
 QTimer ptt::m_timeout3;
+unsigned long long ptt::m_requestCounter = 0;
 
-ptt::ptt(const QString name, VampireResp vs, QObject *parent) : QObject(parent)
-, m_vstate(vs)
+ptt::ptt(const QString name, unsigned int time_ka,
+         unsigned int time_cmd, QObject *parent) : QObject(parent)
+
 {
     m_info.m_name = name;
     m_info.m_err = m_info.m_disconnects = 0;
@@ -28,19 +30,20 @@ ptt::ptt(const QString name, VampireResp vs, QObject *parent) : QObject(parent)
             this, SLOT(hReleased()));
 
 
-    m_timeout1.setInterval(2000);
+    m_timeout1.setInterval(time_ka);
     connect(&m_timeout1, SIGNAL(timeout()),
             this, SLOT(handleTimeout1()));
     m_timeout1.start();
 
 
-    m_timeout2.setInterval(1000);
+    m_timeout2.setInterval(time_cmd);
     connect(&m_timeout2, SIGNAL(timeout()),
             this, SLOT(handleTimeout2()));
     m_timeout2.start();
 
     // log to file eacch 2 hours
-    m_timeout3.setInterval(2*3600000);
+    m_timeout3.setInterval(HOURS*3600000);
+   // m_timeout3.setInterval(10000);
     connect(&m_timeout3, SIGNAL(timeout()),
             this, SLOT(handleTimeout3()));
     m_timeout3.start();
@@ -113,12 +116,14 @@ void ptt::hReleased()
 
 void ptt::handleTimeout1()
 {
+    m_requestCounter++;
     p_srpc->sendCommand("ka\n");
 }
 
 
 void ptt::handleTimeout2()
 {
+    m_requestCounter++;
     p_srpc->sendCommand(m_info.m_command);
 }
 
@@ -127,6 +132,8 @@ void ptt::handleTimeout3()
     QString log;
     log.append("\n---------------------------");
     log.append("Timed log: ");
+    log.append(QString("Requests sent for the past 2 hours: %1\n")
+               .arg(m_requestCounter));
     log.append(QDateTime::currentDateTime().toString());
     log.append("---------------------------\n");
 
@@ -137,49 +144,40 @@ void ptt::handleTimeout3()
 
 bool ptt::isValidResponseFromVampire(const QString& data)
 {
-    switch (m_vstate) {
-    case KA:
-        if (QString::compare(data, "ok\n", Qt::CaseInsensitive)==0) {
-            return true;
-        }
-    case FV:
-        if (QString::compare(data, "1.0\n", Qt::CaseInsensitive) == 0) {
-            return true;
-        }
-    case PN:
-    case PF:
-        if (QString::compare(data, "ok_ptt\n", Qt::CaseInsensitive) == 0) {
-            return true;
-        }
-    case DTMF:
-        if (QString::compare(data, "ok_tone\n", Qt::CaseInsensitive)==0){
-            return true;
-        }
-#if 0
-        if (IS_DIGIT(data.toLocal8Bit().constData()[0]) &&
-            IS_DIGIT(data.toLocal8Bit().constData()[1]) &&
-            data.toLocal8Bit().constData()[0] != data.toLocal8Bit().constData()[1]){
-            return true;
-        }
-#endif
-    case BUSY:
-        if (QString::compare(data, "busy\n", Qt::CaseInsensitive)==0) {
-            return true;
-        }
-    case PARSE_ERROR:
-        if (QString::compare(data, "parse error\n", Qt::CaseInsensitive)) {
-            return true;
-        }
-
-    default:
-        return false;
+    if (QString::compare(data, "ok\n", Qt::CaseInsensitive)==0) {
+        return true;
     }
+    if (QString::compare(data, "1.1\n", Qt::CaseInsensitive) == 0) {
+        return true;
+    }
+    if (QString::compare(data, "ok_ptt\n", Qt::CaseInsensitive) == 0) {
+        return true;
+    }
+    if (QString::compare(data, "ok_tone\n", Qt::CaseInsensitive)==0){
+        return true;
+    }
+
+    if (QString::compare(data, "busy\n", Qt::CaseInsensitive)==0) {
+            return true;
+    }
+
+    if (QString::compare(data, "busy_ptt\n", Qt::CaseInsensitive)==0){
+        return true;
+    }
+
+    if (QString::compare(data, "parse error\n", Qt::CaseInsensitive)) {
+        return true;
+    }
+
+    return false;
+
 }
 
 // nothing interesting here //
 void ptt::hPress()
 {
-
+    // don`t handle presses for now, maybe closing socket
+    p_srpc->closeConnection();
 }
 
 

@@ -28,7 +28,9 @@ public:
 
 public:
                 // name of the button // vamp enum  // qparent
-    explicit ptt(const QString name, VampireResp vs, QObject* parent = nullptr);
+    explicit ptt(const QString name, unsigned int time_ka, unsigned int time_cmd,
+                 QObject* parent = nullptr);
+
     virtual ~ptt();
 
     void registerRpc(srpc::SignalRPC* pRpc);    //for now register an outside ami //
@@ -53,6 +55,7 @@ private slots:
 public:
     // if the response from the vmp is good
     bool isValidResponseFromVampire(const QString& data);
+    static unsigned long long       m_requestCounter;
 
 public:
     static QHBoxLayout hlayout;
@@ -66,7 +69,7 @@ private:
     QTimer                  m_timeout2; // timeput for keepalive
     static QTimer           m_timeout3; // for timed logging
 
-    VampireResp             m_vstate;
+ //   VampireResp             m_vstate;
 
 };
 
