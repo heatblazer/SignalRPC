@@ -90,8 +90,7 @@ void SignalRPC::sendCommand(const QString &com)
 {
     // a good check for the command in the final release is good
     if (p_socket->state() == QTcpSocket::ConnectedState) {
-        if (p_socket->write(com.toLocal8Bit().constData()) <
-                com.size() )
+        if (p_socket->write(com.toLocal8Bit().constData()) < 0)
         {
             p_socket->abort();
             m_state = SRPC_DISCONNECTED;
@@ -133,13 +132,13 @@ void SignalRPC::handleDisconnected()
 {
     m_state = SignalStates::SRPC_DISCONNECTED;
 
-    ((ptt*)p_client)->m_info.m_disconnects++;
-    QString msg(BEGIN_LOG);
-    msg.append("Connection lost!\n");
-    QString s = ((ptt*)p_client)->toString();
-    msg.append(s);
-    msg.append(END_LOG);
-    logger::logMessage(msg);
+//    ((ptt*)p_client)->m_info.m_disconnects++;
+//    QString msg(BEGIN_LOG);
+//    msg.append("Connection lost!\n");
+//    QString s = ((ptt*)p_client)->toString();
+//    msg.append(s);
+//    msg.append(END_LOG);
+//    logger::logMessage(msg);
 
     handleStateChange();
 }
@@ -170,11 +169,14 @@ void SignalRPC::handleMessage(const QString& msg)
 
 void SignalRPC::handleReadyRead()
 {
-    if (p_socket->canReadLine()) { // if I can read a line
+
+    if (p_socket->canReadLine()) {
+        ((ptt*)p_client)->m_respCounter++;
+        // if I can read a line
         // this will get me a ptr to the implemented class by the force
         // of C++ polymorphism
         std::cout << ((ptt*)p_client)->getName().toStdString()
-                  << std::endl;
+                 << std::endl;
         // I will read all that came to me also I need a better check
         // what I `ve read
         while (p_socket->canReadLine()) {
@@ -190,6 +192,7 @@ void SignalRPC::handleReadyRead()
                 // add new check to view a valid response
                 // preserve the newline
                 // for the daemonizing dont print
+// delete later
 #if 0
                 std::cout << b.toStdString() << std::endl;
 #endif
@@ -207,6 +210,7 @@ void SignalRPC::handleReadyRead()
         }
         // if needed I can handle messages
     } else {
+        std::cout << "Can`t read line" << std::endl;
         ((ptt*)p_client)->m_info.m_err++;
         QString errlog = ((ptt*)p_client)->toString();
         logger::logMessage(BEGIN_LOG);

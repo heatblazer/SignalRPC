@@ -12,9 +12,11 @@ using namespace srpc;
 QHBoxLayout ptt::hlayout;
 QTimer ptt::m_timeout3;
 unsigned long long ptt::m_requestCounter = 0;
+unsigned long long ptt::m_respCounter = 0;
 
-ptt::ptt(const QString name, unsigned int time_ka,
-         unsigned int time_cmd, QObject *parent) : QObject(parent)
+
+ptt::ptt(const QString name, int time_ka,
+         int time_cmd, QObject *parent) : QObject(parent)
 
 {
     m_info.m_name = name;
@@ -30,16 +32,22 @@ ptt::ptt(const QString name, unsigned int time_ka,
             this, SLOT(hReleased()));
 
 
-    m_timeout1.setInterval(time_ka);
-    connect(&m_timeout1, SIGNAL(timeout()),
-            this, SLOT(handleTimeout1()));
-    m_timeout1.start();
+    m_timeoutKA.setInterval(time_ka);
+    connect(&m_timeoutKA, SIGNAL(timeout()),
+            this, SLOT(handleTimeoutKA()));
+    m_timeoutKA.start();
 
 
-    m_timeout2.setInterval(time_cmd);
-    connect(&m_timeout2, SIGNAL(timeout()),
-            this, SLOT(handleTimeout2()));
-    m_timeout2.start();
+    m_timeoutPN.setInterval(time_cmd);
+    connect(&m_timeoutPN, SIGNAL(timeout()),
+            this, SLOT(handleTimeoutPN()));
+    m_timeoutPN.start();
+
+    m_timeoutPF.setInterval(time_cmd*20);
+    connect(&m_timeoutPF, SIGNAL(timeout()),
+            this, SLOT(handleTimeoutPF()));
+    m_timeoutPF.start();
+
 
     // log to file eacch 2 hours
     m_timeout3.setInterval(HOURS*3600000);
@@ -114,17 +122,25 @@ void ptt::hReleased()
 {
 }
 
-void ptt::handleTimeout1()
+void ptt::handleTimeoutKA()
 {
     m_requestCounter++;
     p_srpc->sendCommand("ka\n");
 }
 
 
-void ptt::handleTimeout2()
+void ptt::handleTimeoutPN()
 {
     m_requestCounter++;
-    p_srpc->sendCommand(m_info.m_command);
+    p_srpc->sendCommand("pn\n");
+}
+
+
+void ptt::handleTimeoutPF()
+{
+    m_requestCounter++;
+    p_srpc->sendCommand("pf\n");
+
 }
 
 void ptt::handleTimeout3()
@@ -132,7 +148,7 @@ void ptt::handleTimeout3()
     QString log;
     log.append("\n---------------------------");
     log.append("Timed log: ");
-    log.append(QString("Requests sent for the past 2 hours: %1\n")
+    log.append(QString("Requests sent for the past 1 hour: %1\n")
                .arg(m_requestCounter));
     log.append(QDateTime::currentDateTime().toString());
     log.append("---------------------------\n");
@@ -144,7 +160,8 @@ void ptt::handleTimeout3()
 
 bool ptt::isValidResponseFromVampire(const QString& data)
 {
-    if (QString::compare(data, "ok\n", Qt::CaseInsensitive)==0) {
+
+    if (QString::compare(data, "ok_ka\n", Qt::CaseInsensitive)==0) {
         return true;
     }
     if (QString::compare(data, "1.1\n", Qt::CaseInsensitive) == 0) {

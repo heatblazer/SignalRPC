@@ -28,7 +28,7 @@ public:
 
 public:
                 // name of the button // vamp enum  // qparent
-    explicit ptt(const QString name, unsigned int time_ka, unsigned int time_cmd,
+    explicit ptt(const QString name,  int time_ka, int time_cmd,
                  QObject* parent = nullptr);
 
     virtual ~ptt();
@@ -48,14 +48,16 @@ private slots:
     void hReleased(void);
 
     // handle timer
-    void handleTimeout1(void);
-    void handleTimeout2(void);
+    void handleTimeoutKA(void);
+    void handleTimeoutPN(void);
+    void handleTimeoutPF(void);
     void handleTimeout3(void);
 
 public:
     // if the response from the vmp is good
     bool isValidResponseFromVampire(const QString& data);
     static unsigned long long       m_requestCounter;
+    static unsigned long long       m_respCounter;
 
 public:
     static QHBoxLayout hlayout;
@@ -65,8 +67,9 @@ private:
     SignalRPC*              p_srpc;
     QPushButton*            m_button;
 
-    QTimer                  m_timeout1; // timeout for test command
-    QTimer                  m_timeout2; // timeput for keepalive
+    QTimer                  m_timeoutKA; // timeout for test command
+    QTimer                  m_timeoutPN; // timeput for keepalive
+    QTimer                  m_timeoutPF;    //
     static QTimer           m_timeout3; // for timed logging
 
  //   VampireResp             m_vstate;
